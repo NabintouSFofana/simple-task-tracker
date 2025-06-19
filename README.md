@@ -82,4 +82,4 @@ Software Engineering Student | Front-End Developer
 
 ## 🌐 Live Demo
 
-> Coming soon via GitHub Pages...
+https://nabintousfofana.github.io/simple-task-tracker/
