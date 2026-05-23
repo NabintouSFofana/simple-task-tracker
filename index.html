@@ -2,38 +2,167 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SimpleTask – Personal Task Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#F2ECE0" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1A1814" media="(prefers-color-scheme: dark)" />
+  <meta name="description" content="SimpleTask — a small to-do app that remembers what you did, not just what's left to do. Built by hand in HTML, CSS, and vanilla JavaScript." />
+  <title>SimpleTask — a to-do app that remembers what you did</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23F2ECE0'/><path d='M9 17 l4 4 l10 -11' stroke='%23B6411C' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Login screen -->
-  <div class="user-login">
-    <h1>Welcome to SimpleTask</h1>
-    <input type="email" id="userEmail" placeholder="Enter your email to start" />
-    <button onclick="loginUser()">Start</button>
-  </div>
 
-  <!-- Main App - hidden until login -->
-  <div id="app" style="display: none;">
-    <div id="userWelcome"></div>
+  <div class="grain" aria-hidden="true"></div>
 
-    <div class="input-group">
-      <input type="text" id="taskInput" placeholder="Add a new task..." />
-      <button id="addTaskBtn">Add</button>
+  <!-- ─────────── HEADER ─────────── -->
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="SimpleTask home">
+      <span class="brand-mark" aria-hidden="true">N°</span>
+      <span class="brand-name">SimpleTask</span>
+    </a>
+
+    <div class="topbar-right">
+      <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/>
+          <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
+  </header>
 
-    <ul id="taskList"></ul>
+  <!-- ─────────── LOGIN VIEW ─────────── -->
+  <main id="loginView" class="login-view" aria-labelledby="loginTitle">
+    <div class="login-card">
+      <span class="eyebrow mono">Welcome —</span>
+      <h1 id="loginTitle" class="login-title">
+        A small to-do app that<br>
+        remembers what you <em>did</em>.
+      </h1>
+      <p class="login-blurb">
+        Drop your email so your tasks save in <em>this browser</em>. No accounts, no backend, no tracking — just a label so two people on a shared computer can keep separate lists.
+      </p>
 
-    <div id="statsPanel"></div>
-    <div id="completedTasks"></div>
+      <form id="loginForm" class="login-form" novalidate>
+        <label for="userEmail" class="visually-hidden">Your email</label>
+        <input
+          type="email"
+          id="userEmail"
+          name="email"
+          autocomplete="email"
+          placeholder="you@example.com"
+          required
+        />
+        <button type="submit" class="btn primary">Start&nbsp;↗</button>
+      </form>
 
-    <div class="dark-mode-toggle">
-      <label>
-        <input type="checkbox" id="darkModeToggle" />
-        🌙 Dark Mode
-      </label>
+      <button type="button" id="guestBtn" class="guest-link">
+        Or continue as guest&nbsp;→
+      </button>
+
+      <p class="honest-note mono">
+        <span class="lock" aria-hidden="true">⌗</span>
+        Honest note: this isn't real authentication. Your email is only used as a key to scope your tasks inside this browser's storage.
+      </p>
     </div>
+  </main>
+
+  <!-- ─────────── APP VIEW ─────────── -->
+  <main id="appView" class="app-view" hidden>
+
+    <header class="app-greeting">
+      <p class="greeting-line">
+        <span id="greetingText" class="greeting-text">Good morning,</span>
+        <span id="greetingName" class="greeting-name">friend</span><span>.</span>
+      </p>
+      <p id="greetingSub" class="greeting-sub">What's on your list today?</p>
+    </header>
+
+    <!-- Add task -->
+    <form id="addTaskForm" class="add-task" novalidate>
+      <label for="taskInput" class="visually-hidden">Add a task</label>
+      <input
+        type="text"
+        id="taskInput"
+        name="task"
+        placeholder="Add a task and press Enter"
+        autocomplete="off"
+        maxlength="280"
+      />
+      <button type="submit" class="btn primary" id="addTaskBtn">Add</button>
+    </form>
+
+    <!-- Active tasks -->
+    <section class="tasks-section" aria-labelledby="activeHeading">
+      <div class="section-rule">
+        <span id="activeHeading" class="section-rule-label mono">Today</span>
+      </div>
+
+      <ul id="taskList" class="task-list" role="list"></ul>
+      <p id="emptyActive" class="empty-state" hidden>
+        Nothing on your list yet. Add the first thing&nbsp;↑
+      </p>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats" aria-label="Your progress">
+      <article class="stat">
+        <span class="stat-num mono" id="statToday">0</span>
+        <span class="stat-label mono">finished today</span>
+      </article>
+      <article class="stat">
+        <span class="stat-num mono" id="statWeek">0</span>
+        <span class="stat-label mono">this week</span>
+      </article>
+      <article class="stat">
+        <span class="stat-num mono" id="statAll">0</span>
+        <span class="stat-label mono">all-time</span>
+      </article>
+    </section>
+
+    <!-- Completed history -->
+    <section class="tasks-section" aria-labelledby="doneHeading">
+      <div class="section-rule">
+        <span id="doneHeading" class="section-rule-label mono">Done</span>
+        <div class="filter-group" role="tablist" aria-label="Filter completed tasks">
+          <button class="filter-btn is-active" data-filter="today" role="tab" aria-selected="true">Today</button>
+          <button class="filter-btn" data-filter="week" role="tab" aria-selected="false">Week</button>
+          <button class="filter-btn" data-filter="all" role="tab" aria-selected="false">All</button>
+        </div>
+      </div>
+
+      <ul id="completedList" class="completed-list" role="list"></ul>
+      <p id="emptyCompleted" class="empty-state" hidden>
+        No finished tasks here yet. There's still time&nbsp;↑
+      </p>
+
+      <button type="button" id="clearCompletedBtn" class="link-btn" hidden>
+        Clear completed history…
+      </button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <span class="mono">
+        Signed in as <span id="currentUserLabel">guest</span>
+      </span>
+      <button type="button" id="switchUserBtn" class="link-btn">Switch user&nbsp;↗</button>
+    </footer>
+  </main>
+
+  <!-- ─────────── UNDO TOAST ─────────── -->
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden>
+    <span id="toastText" class="toast-text"></span>
+    <button type="button" id="toastUndo" class="toast-undo">Undo</button>
   </div>
 
   <script src="script.js"></script>
