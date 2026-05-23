@@ -3,9 +3,8 @@
 > A small to-do app that remembers what you **did** — not just what's left to do.
 > Built by hand in HTML, CSS, and vanilla JavaScript. No frameworks. No backend.
 
-[**Live demo →**](https://nabintousfofana.github.io/simple-task-tracker/)
-
-![SimpleTask screenshot](task%20tracker.png)
+## Screenshot
+<img width="930" height="869" alt="image" src="https://github.com/user-attachments/assets/158ef26e-975a-43c3-8aac-90d0b31b1b09" />
 
 ---
 
