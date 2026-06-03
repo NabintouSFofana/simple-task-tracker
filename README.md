@@ -4,7 +4,8 @@ A small to-do app that keeps track of what you've finished, not just what's left
 
 **Live:** https://nabintousfofana.github.io/simple-task-tracker/
 
-![SimpleTask screenshot](task%20tracker.png)
+<img width="991" height="865" alt="image" src="https://github.com/user-attachments/assets/afdc0a10-9cbe-4570-9552-bb5c376e217e" />
+
 
 ## What it does
 
